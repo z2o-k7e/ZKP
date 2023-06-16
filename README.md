@@ -1,7 +1,7 @@
 ### ZKP Public Goods 共创目录 (暂定)
 
 1. 第一章写总结性的综述概念，zkp 有什么用？发展现状？什么场景需要什么算法？
-2. 算术化，r1cs，双线性映射，（椭圆曲线、BLS12-381曲线?）
+2. 算术化，r1cs，双线性映射（+ 椭圆曲线、BLS12-381曲线）
 3. Commitment scheme + IOP （Pedersen、Polynomial Commitment、IPA commitment、mutlinear commitment、vector commitment） 
 4. 简单的证明系统（Sigma 协议？、schnoor、简易 zk-SNARKs？ ，zk-STARKs 想提可以提） 
 5. zksnark（PLONK 为主），groth16 提一提
@@ -11,7 +11,7 @@
 
 最重要的目的：① 沉淀过往学习内容  ② 作为第三期学员的的基础参考资料
 
-DDL： ①：第三期开课前 (不是宣发前)；  ②：认领后10 天 ；  ③：认领后 15 天 ... 依次类推 +5 days
+Deadline：第一章：第三期开课前 (不是宣发前)；  第二章：认领后 15 天内完成 ；  第三章：认领后 20 天完成 ；第四章：认领后 20 天内完成； 第五、六章：认领后 30 天内完成
 
 建立 Flag：https://flag-dao.vercel.app/ （练习 @Demian 获得 $LT Token 进行质押）
 
