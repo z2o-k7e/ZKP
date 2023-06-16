@@ -13,6 +13,8 @@
 
 Deadline：第一章：第三期开课前 (不是宣发前)；  第二章：认领后 15 天内完成 ；  第三章：认领后 20 天完成 ；第四章：认领后 20 天内完成； 第五、六章：认领后 30 天内完成
 
+> 因为第三期马上就开课了，比较后面的章节比较难，时间可以放宽，前面的一定要在 DL 内完成。
+
 建立 Flag：https://flag-dao.vercel.app/ （练习 @Demian 获得 $LT Token 进行质押）
 
 Github: https://github.com/zkp-co-learning/ZKP ：各位可以先在本地 Markdown 撰写然后 PR
