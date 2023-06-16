@@ -22,17 +22,15 @@ Github: https://github.com/zkp-co-learning/ZKP ：各位可以先在本地 Markd
 写作要点：使用 Markdown + Latex，尽量清晰易懂，拒绝晦涩的表述，避免缺乏上下文的过多引用，简明易懂 > 绝对精确，不限篇幅，多废话都没关系
 
 
+### 后续内容
 
-目前的认领情况：第三章 Keep 认领；
-
-
-
-后续：https://github.com/zkp-co-learning/Projects ，这个仓库不再局限于基础知识，而更偏向于 2 个方面：
+https://github.com/zkp-co-learning/Projects ，这个仓库不再局限于基础知识，而更偏向于 2 个方面：
 
 - 面向仅仅是使用 zk 的学员：比如 zk 红包、开源的 zk 库去开发 zk dapp
 - 面向实际方向的 zk 学习：比如zkml，zkrollup，zkvm，zkevm  @笃行 提供的思路
 
-
-
 https://github.com/zkp-co-learning/Collections： 收集一切无大纲、不属于以上 2 个主题的所有 zkp 内容，欢迎大家积极 commit！
 
+### 认领情况
+- 第二章：阳小雪 认领；
+- 第三章： Keep 认领；
