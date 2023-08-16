@@ -184,7 +184,7 @@ verifier 得到 verification key，在上面的 `Setup` 步骤中也提到了。
             Scalar.root_of_unity(pk.group_order),
         )
 ```
-和 prover 不一样的是，为什么中间 8 个值要用 commitment 的形式发给 verifier 呢？这是因为 Plonk 协议为了保证 verifier 端验证的计算复杂度尽量低，所以没有给出原始的多项式，而只给出了 KZG 承诺的值，后面会看到，verifier 通过 pairing 验证就可以保证这些承诺值和原始的多项式是一一对应的，prover 欺骗不了 verifier，这样既保证的正确性，也保证了 verifier 验证的简单性。
+和 prover 不一样的是，为什么中间 8 个值要用 commitment 的形式发给 verifier 呢？这是因为 Plonk 协议为了保证 verifier 端验证的计算复杂度尽量低，所以没有给出原始的多项式，而只给出了 KZG 承诺的值，后面会看到，verifier 通过 pairing 验证就可以保证这些承诺值和原始的多项式是一一对应的，prover 欺骗不了 verifier，这样既保证的正确性，也保证了 verifier 验证的简单性，从而实现了 SNARK 中的 S(Succinct，简洁)。
 
 ## Assignment
 ```python
