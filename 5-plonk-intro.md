@@ -191,7 +191,7 @@ verifier 得到 verification key，在上面的 `Setup` 步骤中也提到了。
 assignments = {"a": 3, "b": 4, "c": 12, "d": 5, "e": 60}
 ```
 
-Assignment 是对电路中引线的赋值，也叫 witness 或者 private input。这些值只有 prover 知道，对 verifier 是保密的。prover 最终要向 verifier 提供证明，保证将这些值输入到 program 中能得到指定的结果。
+Assignment 是对电路中引线的赋值。这些值只有 prover 知道，对 verifier 是保密的，这些值也叫 witness 或者 private input。prover 最终要向 verifier 提供证明，保证将这些值输入到 program 中能得到指定的结果。
 
 ## Generate proof
 ```python
