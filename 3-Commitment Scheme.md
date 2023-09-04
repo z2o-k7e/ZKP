@@ -1,4 +1,4 @@
-本文尝试以尽可能简单的方式介绍常见的commitment scheme, 让读者了解每个commitment scheme 的过程，尽量不涉及复杂的数学知识。
+本文尝试以尽可能简单的方式介绍常见的commitment scheme, 让读者了解每个commitment scheme 的过程，尽量不涉及复杂的数学知识。<br>
 承诺(Commitment)是零知识证明领域的一个重要组件，它以安全的方式将一个值隐藏，并在未来的证明这个值的有效性。
 所谓承诺，是对消息「锁定」，得到一个锁定值。这个值被称为对象的「承诺」，例如 $C$ 就是消息 $x$的承诺
 
@@ -152,6 +152,77 @@ $$
 <div align=center><img src="https://github.com/zkp-co-learning/ZKP/assets/78890754/a079b876-8531-47f5-ac90-1ced1f61cfd9"></div>
 <br>
 
+## 单个多项式多点打开
 
+Prover 明阶为 $d$ 的函数 $f(x)$经过 $f(\zeta_1)=y_1, f(\zeta_2)=y_2，\cdots, f(\zeta_m)=y_m, m < d$ 个点，只需要验证一次就可以了。
+首先构造一个经过 $(\zeta_1, y_1),(\zeta_2,y_2)，\cdots,(\zeta_m,y_m)$ 的辅助函数 $h(x)$。
+由于 $(\zeta_1, \zeta_2, \cdots, \zeta_m)$同时为 $f(x),h(x)$的根，因此他们也是 $f(x)-h(x)$的根，故存在一个商多项式:
 
- 
+$$
+q(x)=\frac{f(x)-h(x)}{\prod \limits_{i=1}^m (x-\zeta_i)}
+$$
+
+Prover 生成$[q(x)]_2$ 并发送给Verifier，Verifier 自己计算 $[h(x)]_1$和 $[\prod \limits_{i=1}^m(x-\zeta_m)]_1$ ，最后再验证
+
+$$
+e([f(x)]_1- [h(x)]_1，[1]_2) \overset{?}{=} e([\prod \limits_{i=1}^m(x-\zeta_m) ]_1,[q(x)]_2)
+$$
+
+需要说明 $[q(x)]_2$是 $\mathbb{G_2}$上的承诺，因此需要在Setup阶段产生m个 $\mathbb{G_2}$基 $(H, \tau H, \cdots, \tau^mH)$ 。
+<br>
+<br>
+
+## 多个多项式同一点打开
+
+假如同时使用多个多项式承诺，那么他们的验证操作可以合并在一起完成。即把多个多项式先合并成一个更大的多项式，然后仅通过验证一点，来完成对原始多项式的批量验证。
+假设我们有两个多项式 $f_1(x), f_2(x)$，Prover 要同时向 Verifier 证明 $f_1(\zeta)=y_1$和 $f_2(\zeta)=y_2$ ，那么有
+
+$$
+\begin{array}{l}
+f_1(X) = q_1(X)\cdot (X-\zeta) + y_1\\
+f_2(X) = q_2(X) \cdot (X-\zeta) + y_2 \\
+\end{array}
+$$
+
+通过一个随机数 $\nu$，Prover 可以把两个多项式 $f_1(x), f_2(x)$) 折叠在一起，得到一个临时的多项式 $g(x)$ ：
+
+$$
+g(X) = f_1(X) + \nu\cdot f_2(X)
+$$
+
+进而我们可以根据多项式余数定理，推导验证下面的等式：
+
+$$
+g(X) - (y_1 + \nu\cdot y_2) = (X-\zeta)\cdot (q_1(X) + \nu\cdot q_2(X))
+$$
+
+我们把等号右边的第二项看作为「商多项式」，记为 $q(x)$：
+
+$$
+q(X) = q_1(X) + \nu\cdot q_2(X)
+$$
+
+假如 $f_1(x)$  在 $x=\zeta$ 处的求值证明为 $\pi_1$，而 $f_2(x)$在 $\zeta$ 处的求值证明为 $\pi_2$，那么根据群加法的同态性，Prover 可以得到商多项式  $q(x)$的承诺：
+
+$$
+[q(x)]_1 = \pi = \pi_1 + \nu\cdot\pi_2
+$$
+
+因此，只要 Verifier 发给 Prover 一个额外的随机数 $\nu$，双方就可以把两个（甚至多个）多项式承诺折叠成一个多项式承诺 $C$：
+
+$$
+C = C_1 + \nu\ast C_2
+$$
+
+并用这个折叠后的 $C$ 来验证多个多项式在一个点处的运算取值：
+
+$$
+y_g = y_1 + \nu\cdot y_2
+$$
+
+从而把多个求值证明相应地折叠成一个，Verifier 可以一次验证完毕：
+
+$$
+ e([g(x)]_1- [y_g]_1 + \zeta[q(x)]_1 , [1]_2)  \overset{?}{=} e([q(x)]_1, [x]_2)
+$$
+
