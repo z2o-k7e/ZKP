@@ -1,4 +1,8 @@
-本文尝试以尽可能简单的方式介绍常见的commitment scheme, 让读者了解每个commitment scheme 的过程，尽量不涉及复杂的数学知识。<br>
+本文尝试以尽可能简单的方式介绍常见的commitment scheme, 让读者了解每个commitment scheme 的过程，尽量不涉及复杂的数学知识。
+<br>
+<br>
+
+# commitment
 承诺(Commitment)是零知识证明领域的一个重要组件，它以安全的方式将一个值隐藏，并在未来的证明这个值的有效性。
 所谓承诺，是对消息「锁定」，得到一个锁定值。这个值被称为对象的「承诺」，例如 $C$ 就是消息 $x$的承诺
 
@@ -14,6 +18,8 @@ $$
 + **Setup：** 选择一组公共参数，通常是在椭圆曲线或者有限域挑选一组随机数作为基点。有些commitment scheme 没有Setup阶段。
 + **Commit：** Prover 将原始信息和基点进行运算得到一个加密的值，原始的信息隐藏在其中，并将这个加密的值发给Verifier。
 + **Verify：** Prover提供原始信息或者相关的证明给Verifier，Verifer执行验证算法来确认承诺的正确性。
+<br>
+<br>
 
 # Pedersen Commitment
 Pedersen承诺 是1992年在“Non-Interactive and Information-Theoretic Secure Verifiable Secret Sharing”一文中提出。Pedersen承诺既可以应用于离散对数和椭圆曲线，本文中将以椭圆曲线为例说明。 Pedersen Commitment
