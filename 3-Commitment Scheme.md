@@ -33,4 +33,33 @@ $$
  C = a_0G_0+a_1G_1+\cdots+ a_nG_n
 $$
 
-![pedersen commitment  (2)](https://github.com/zkp-co-learning/ZKP/assets/78890754/2027ab30-b7a1-4680-8635-2b9b82b7cd17)
+<div align=center><img src ="https://github.com/zkp-co-learning/ZKP/assets/78890754/2027ab30-b7a1-4680-8635-2b9b82b7cd17"></div>
+
+
+# Vector Commitment
+向量承诺用于承诺有 $d$个元素的向量 $\vec u=(u_1,u_2,\cdots,u_d)$，Merkle Tree 是常用的矢量承诺方案，对于 $\vec u=[z,k,-,s,n,a,r,k]$ 向量， 它的Merkle承诺如下图中的二叉树所示，图中每一个节点都是由它的孩子节点的hash构成:
+- $h_1=H(h_2,h_3)$
+- $h_2 = H(h_4,h_5)$
+- and so on
+
+<div align=center><img src="https://github.com/zkp-co-learning/ZKP/assets/78890754/51a562b1-37b4-4b06-99c7-e97482b5eb6d"></div>
+
+$h_1$是Merkle Tree的根，也是 $\vec u$ 的commitment。 当Prover被要求证明的某元素确实存在于某个位置时，它将仅提供必要的节点。这些节点构成的集合通常被称为Merkle Path, 例如，为了证明 $n$是 $\vec u$的第4个元素， Prover将提供Merkle Path  $[s, h_4, h_3]$ 给Verifier， Verifier将执行以下操作：
+
+- $h_5=H(s,n)$
+- $h_2=H(h_4, h_5)$
+- $h'_1 = H(h_2, h_3)$
+
+<div align=center><img src="https://github.com/zkp-co-learning/ZKP/assets/78890754/d1691b18-96d5-478b-b6ff-7daf8ecec625"></div>
+
+Verifier 验证 $h'_1 \overset{?}{=} h_1$，如果它们相等，那么 $n$确实是 $\vec u$中第4个元素。
+
+<div align=center><img src="https://github.com/zkp-co-learning/ZKP/assets/78890754/30a24454-c8d5-4e61-9e9d-b418fb9ec526"></div>
+
+
+
+
+
+
+
+ 
