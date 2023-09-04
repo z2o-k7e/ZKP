@@ -1,4 +1,4 @@
-本文尝试以简单的方式介绍常见的commitment scheme, 让初学者对每个commitment scheme过程有一个了解，尽量不涉及群(Group),域(Field), 有限域(Finite Field)等复杂的数学知识。
+本文尝试以简单的方式介绍常见的commitment scheme, 让初学者对每个commitment scheme过程有一个了解，尽量不涉及群(Group),域(Field), 有限域(Finite Field)等复杂的数学知识。此外，同一个commitment sheme 有不同的表述方法，本文主要参考 https://zk-learning.org 中的表述方法。
 <br>
 <br>
 
@@ -443,4 +443,5 @@ IPA argument 的思路是通过随机数 $r$将一个高阶多项式不停的折
 
 
 # FRI Commitment
-TODO
+FRI 的 $<u>F</u>ast <u>R</u>eed-Solomon <u>I</u>nteractive$ 的简称
+为了简化，接下来我们以 $f(x)= 1+x+2x^2+3x^3$为例来说明IPA的流程。
