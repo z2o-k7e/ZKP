@@ -110,7 +110,7 @@ $$
     
 3. 最后也是最重要的，就是删除 $\tau$。如果这个秘密被其他人知道，他们可以伪造证明。在实际执行时，通常有多方参与Setup过程，每个参与方贡献一部分数据组成 $\tau$，只要其中一方是诚实的，删除了自己贡献的数据，那么这个 $\tau$就是可信的，这个过程也被称为Trust Setup Ceremony.     
 
-+ **Commit**：
++ **Commit**：<br>
 Prover 将多项式系数 $(a_0,a_1,\cdots,a_{n-1})$和 $(G_0,G_1,\cdots,G_{n-1})$ 逐项相乘，得到commitment $[f(x)]_1$:
 
 $$
@@ -318,9 +318,9 @@ $$
 
 然后将将 $z,z_L,z_R,L,R$,发送给Verifier。 
 
-4. Verifier 验证 $z \overset{?}{=}z_{L}+z_{R}u^m$。
-5. 如果通过，Verifier 发送一个随机数 $r$给Prover。
-6. Prover 使用 $r$ 折叠 $f(x)$ 和 $gp$,  得到 $f'(x)$和 $gp'$，折叠的方式如下：
+3. Verifier 验证 $z \overset{?}{=}z_{L}+z_{R}u^m$。
+4. 如果通过，Verifier 发送一个随机数 $r$给Prover。
+5. Prover 使用 $r$ 折叠 $f(x)$ 和 $gp$,  得到 $f'(x)$和 $gp'$，折叠的方式如下：
 <br>
 
 $$
@@ -351,7 +351,7 @@ $$
 
 <br>
 
-7. Prover 计算 $f'(x)$在 $x=u$点的取值 $z'$ 和它的承诺 $C'$:
+折叠后，Prover计算新的多项式 $f'(x)$在 $x=u$点的取值 $z'$ 和它的承诺 $C'$:
 
 $$
 z'= (ra_0+a_{m})+(ra_1+a_{m+1})u+ \cdots + (ra_{m-1}+a_{n-1})u^{m-1} = rz_L+z_R
@@ -389,7 +389,7 @@ $$
 
 然后将 $z',C',z'_L,z'_R,L',R'$ 发送给Verifier 
 
-8. Verifier 知道 $z_L,z_R,L,R,r$ 的值， 自己计算比验证：
+6. Verifier 知道 $z_L,z_R,L,R,r$ 的值， 自己计算比验证：
     
 $$
 z' \overset{?}{=}rz_L+z_Ru^{m/2}
@@ -399,22 +399,17 @@ $$
 C' \overset{?}{=}C+rL+r^{-1}R
 $$
     
-9. 令 $z_L=z'_L, z_R=z'_R, L=L', R=R'，m=m/2$，重复5～8步， 直到 $\vec a$ 折叠成1个点。
-10. 最后一轮中除了第8步的验证外，还需要验证 $\vec a' \overset{?}{=} z'$。
-11. 如果上述过程均正确完成，verifier 接受 否则拒绝。
+7. 令 $z_L=z'_L, z_R=z'_R, L=L', R=R'，m=m/2$，重复4～6步， 直到 $\vec a$ 折叠成1个点。
+8. 最后一轮中除了第8步的验证外，还需要验证 $\vec a' \overset{?}{=} z'$。如果上述过程均正确完成，verifier 接受 否则拒绝。
+<br>
 
-
-
-
-
-
-
-
-为了简化，接下来我们以 $f(x)= a_0+a_1x+a_2x^2+a_3x^3+a_4x^4$ 为例来说明IPA的流程。
-
+为了简化，接下来我们以 $f(x)= 1+x+2x^2+3x^3$为例来说明IPA的流程。
 
 <br>
+<div align=center><img src="https://github.com/zkp-co-learning/ZKP/assets/78890754/72203515-0735-4810-b126-1f02b91310e0"></div>
 <br>
+<br>
+
 
 # FRI Commitment
 TODO
