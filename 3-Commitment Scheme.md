@@ -1,4 +1,4 @@
-本文尝试以简单的方式介绍常见的commitment scheme, 让读者了解每个commitment scheme 的过程，尽量不涉及群(Group),域(Field), 有限域(Finite Field)等复杂的数学知识。
+本文尝试以简单的方式介绍常见的commitment scheme, 让初学者对每个commitment scheme过程有一个了解，尽量不涉及群(Group),域(Field), 有限域(Finite Field)等复杂的数学知识。
 <br>
 <br>
 
@@ -406,9 +406,10 @@ $$
 为了简化，接下来我们以 $f(x)= 1+x+2x^2+3x^3$为例来说明IPA的流程。
 
 <br>
-<div align=center><img src="https://github.com/zkp-co-learning/ZKP/assets/78890754/72203515-0735-4810-b126-1f02b91310e0"></div>
+<div align=center><img src="https://github.com/zkp-co-learning/ZKP/assets/78890754/49b6291a-946f-410e-b209-3864bccf2a0e"></div>
 <br>
 <br>
+
 
 
 # FRI Commitment
