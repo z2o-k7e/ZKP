@@ -174,7 +174,7 @@ $$
 e([f(x)]_1- [h(x)]_1，[1]_2) \overset{?}{=} e([\prod \limits_{i=1}^m(x-\zeta_m) ]_1,[q(x)]_2)
 $$
 
-需要说明 $[q(x)]_2$是 $\mathbb{G_2}$上的承诺，因此需要在Setup阶段产生m个 $\mathbb{G_2}$基 $(H, \tau H, \cdots, \tau^mH)$ 。
+需要说明 $[q(x)]_2$是 $\mathbb{G_2}$上的承诺，因此需要在Setup阶段产生m个 $\mathbb{G_2}$基 $(H, \tau H, \cdots, \tau^mH)$ $(\color{red}Question(keep)是否需要m个 \mathbb{G}_2上的基点?)$。
 <br>
 <br>
 
@@ -400,7 +400,7 @@ C' \overset{?}{=}C+rL+r^{-1}R
 $$
     
 7. 令 $z_L=z'_L, z_R=z'_R, L=L', R=R'，m=m/2$，重复4～6步， 直到 $\vec a$ 折叠成1个点。
-8. 最后一轮中除了第8步的验证外，还需要验证 $\vec a' \overset{?}{=} z'$。如果上述过程均正确完成，verifier 接受 否则拒绝。
+8. 最后一轮中除了第8步的验证外，还需要验证 $\vec a' \overset{?}{=} z'$  $(\color{red}Question(keep) 这句话是否正确)$。如果上述过程均正确完成，verifier 接受 否则拒绝。
 <br>
 
 为了简化，接下来我们以 $f(x)= 1+x+2x^2+3x^3$为例来说明IPA的流程。
