@@ -232,3 +232,49 @@ $$
  e([g(x)]_1- [y_g]_1 + \zeta[q(x)]_1 , [1]_2)  \overset{?}{=} e([q(x)]_1, [x]_2)
 $$
 
+<br>
+<br>
+
+# Multilinear Commitment
+如果一个多项式有 $l$个变量， 并且每个变量的最高次为1，称此多项式为multilinear 多项式 。例如
+
+$$
+g(x_1, x_2, x_3, x_4) = (1-x_1)x_2((x_3+x_4)-(x_3x_4))
+$$
+
+我们可以使用sum-check protocol [Lund-Fortnow-Karloff-Nissan'90] 对multilinear 多项式的承诺及其验证。sum-check protocol 只有Commit 和 Verify两个阶段。
+
++ **Commit**：<br>
+Prover 计算multilinear多项式的commitment
+
+$$
+C= \sum_{b_0 \in \{0,1\}} \sum_{b_2 \in \{0,1\}} \cdots \sum_{b_l \in \{0,1\}} g(b_1, b_2, b_3, \cdots, b_l)
+$$
+
+并将其发给Verifier。仔细观察，不难看出通过 枚举 $(b_0,b_1,\cdots,b_l)$ 每一个取值带入公式后求和就能得到C， 例如对于上面 $g(x_1, x_2, x_3, x_4)$ 这个函数，这个值等于= $g(0,0,0,0) + g(0,0,0,1)+\cdots+g(1,1,1,1)$
+
+
++ **Verify**：
+1. Prover 保留第1个变量 $x_1$为自由变量, 其他变量取值为 $x_i\in \{0,1\}(2\leqslant i \leqslant l)$ 时，得到一个部分和多项式 $g_1(x_1)$。
+2. Verifier 检查 $g_0 \overset{?}{=}g_1(0)+g_1(1)$。
+3. Verifier 挑选一个随机数 $\zeta_1$ 发送给Prover。
+4. Prover 用 $\zeta_1$ 取代 $x_1$。然后保留第2个变量 $x_2$为自由变量，其他变量的取值为 $x_i\in \{0,1\}(3\leqslant i \leqslant l)$时，计算部分和公式 
+ $g_2(x_2)$。
+5. Verifier 检查 $g_{i} \overset{?}{=}g_{i+1}(0)+g_{i+1}(1)$。
+6. 重复3~5直到最后一个变量 $x_l$也变成自由变量。
+7. Verifier 挑选一个随机数 $\zeta_l$，本地计算 $g_l(\zeta_l)$，并从一个可信的oracle $(\color{red}Question(keep)实际执行中谁是oracle?)$ 获得 $g(\zeta_1,\zeta_2,\cdots,\zeta_l)$的值，然后验证 $g_l(\zeta_l) \overset{?}{=} g(\zeta_1,\zeta_2,\cdots,\zeta_l)$
+
+
+下图详细的描述了 $g(x_1, x_2, x_3, x_4) = (1-x_1)x_2((x_3+x_4)-(x_3x_4))$ commit和verify的过程.<br>
+<br>
+<div align=center><img src="https://github.com/zkp-co-learning/ZKP/assets/78890754/c7c922c8-8018-4d5c-9796-2065d2ead7dc"></div>
+<br>
+<br>
+
+# IPA Arguments
+
+<br>
+<br>
+
+# FRI Commitment
+TODO
