@@ -1,4 +1,4 @@
-本文尝试以尽可能简单的方式介绍常见的commitment scheme, 让读者了解每个commitment scheme 的过程，尽量不涉及复杂的数学知识。
+本文尝试以简单的方式介绍常见的commitment scheme, 让读者了解每个commitment scheme 的过程，尽量不涉及群(Group),域(Field), 有限域(Finite Field)等复杂的数学知识。
 <br>
 <br>
 
@@ -275,17 +275,16 @@ $$
 IPA(Inner Product Arguments) 中文翻译为内积证明，这是一种不要求可信设置的零知识证明算法。门罗币（Monero）就用了这个算法。内积，即计算两个向量中每个分量的乘积和， 例如对于$\vec a = (a_0, a_1, \ldots, a_{n-1})$，$\vec b = (b_0, b_1, \ldots, b_{n-1})$ 两个向量，他们的内积等于
 
 $$
-\begin{align*} \vec a \cdot \vec b = a_0 b_0 + a_1 b_1 + a_2 b_2 + \cdots + a_{n-1} b_{n-1} 
-\end{align*}
+\vec a \cdot \vec b = a_0 b_0 + a_1 b_1 + a_2 b_2 + \cdots + a_{n-1} b_{n-1} 
 $$
 
-我们可以将多项式$f(x)= a_0+a_1x+a_2x^2+a_3x^3+\cdots+a_{n-1}x^{n-1}$, 看作$\vec a = (a_0, a_1, \ldots, a_{n-1})$ 和$\vec b = (1, x, \ldots, x^{n-1})$ 两个向量的内积。
+我们可以将多项式 $f(x)= a_0+a_1x+a_2x^2+a_3x^3+\cdots+a_{n-1}x^{n-1}$, 看作 $\vec a = (a_0, a_1, \ldots, a_{n-1})$ 和 $\vec b = (1, x, \ldots, x^{n-1})$ 两个向量的内积。
 
 + **Setup**：<br>
 生成一组随机数，构成公共参数 $gp=(G_0,G_1,G_2,\cdots, G_{n-1})$。
 
 + **Commit**：<br>
-Prover 将系数向量 $\vec a$ 和 gp 做内积，得到commitment 如下，并发送给Verifier.
+Prover 将系数向量 $\vec a$ 和 $gp$ 做内积，得到commitment C，并发送给Verifier.
 
 $$
 C = \vec a \cdot \vec G= a_0 G_0 + a_1  G_1 + \cdots + a_{n-1} G_{n-1}
@@ -293,13 +292,13 @@ $$
 
 + **Verify**：<br>
 1. Verifier 发送一个随机数 $u$ 给Prover。
-2. Prover 计算 $f(x)$在 $x=u$点的取值 $z$：
+2. Prover 计算 $f(x)$在  $x=u$ 点的取值 $z$：
 
 $$
 z = (a_0, a_1,a_2,\cdots, a_{n-1}) \cdot (1,u,u^2, \cdots, u^{n-1})=(a_0+a_1u+a_2u^2+ \cdots + a_{n-1}u^{n-1})
 $$
 
-将 $\vec a, gp$ 分成左右两半，计算 $z_L, z_R, L, R$（假设 $n=2^k$)
+将 $\vec a, gp$ 从中间分成两半，计算 $z_L, z_R, L, R$（假设 $n=2^k, m=n/2$)
 
 $$
 z_L=a_0+a_1u+ \cdots a_{m-1}u^{m-1}
@@ -319,8 +318,9 @@ $$
 
 然后将将 $z,z_L,z_R,L,R$,发送给Verifier。 
 
-4. Verifier 验证 $z \overset{?}{=}z_{L}+z_{R}u^m$, 如果验证通过，Verifier 发送一个随机数 $r$给verifier。
-5. Prover 使用$r$折叠 $f(x) 和gp$,  得到 $f'(x)$和 $gp'$，折叠的方式如下：
+4. Verifier 验证 $z \overset{?}{=}z_{L}+z_{R}u^m$。
+5. 如果通过，Verifier 发送一个随机数 $r$给Prover。
+6. Prover 使用 $r$ 折叠 $f(x)$ 和 $gp$,  得到 $f'(x)$和 $gp'$，折叠的方式如下：
 <br>
 
 $$
@@ -350,7 +350,8 @@ G_{n-1}\end{pmatrix}= (r^{-1}G_0+G_m, r^{-1}G_1+G_{m+1}, \cdots, r^{-1}G_{m-1}+G
 $$    
 
 <br>
-6. Prover 计算 $f'(x)$在$x=u$点的取值 $z'$ 和它的承诺 $C'$:
+
+7. Prover 计算 $f'(x)$在 $x=u$点的取值 $z'$ 和它的承诺 $C'$:
 
 $$
 z'= (ra_0+a_{m})+(ra_1+a_{m+1})u+ \cdots + (ra_{m-1}+a_{n-1})u^{m-1} = rz_L+z_R
@@ -368,14 +369,14 @@ C'&=(a_0',a_1', \cdots, a_{m-1}') \cdot (G_0',G_1',\cdots, G_{m-1}')\\
 $$
 
 
-同时将 $\vec a’, gp’$ 分成左右两半，计算 $z_L’, z_R’, L’, R’$，
+同时将 $\vec a’, gp’$ 从中间分成两半，计算 $z_L’, z_R’, L’, R’$：
 
 $$
 z_L’=a_0’+a_1’u+ \cdots a_{m/2 -1}’u^{m/2-1}
 $$
 
 $$
-z_R' = a_{m/2}'+a_{m/2+1}'u+ \cdots + a_{m-1}u^{m/2-1} 
+z_R' = a_{m/2}'+a_{m/2+1}'u+ \cdots + a_{m-1}'u^{m/2-1} 
 $$
 
 $$
@@ -388,19 +389,19 @@ $$
 
 然后将 $z',C',z'_L,z'_R,L',R'$ 发送给Verifier 
 
-7. Verifier 已经知道 $z_L,z_R,L, R,r$， 验证
+8. Verifier 知道 $z_L,z_R,L,R,r$ 的值， 自己计算比验证：
     
 $$
-z' \overset{?}{=}rz_L+z_R
+z' \overset{?}{=}rz_L+z_Ru^{m/2}
 $$
     
 $$
 C' \overset{?}{=}C+rL+r^{-1}R
 $$
     
-8. 令 $z_L=z'_L, z_R=z'_R, L=L', R=R'$，重复4～7步， 直到 $\vec a$ 折叠成1个点。
-9. 最后一轮中除了第7步的验证外，还需要验证 $\vec a' \overset{?}{=} z'$。
-8. 如果上述过程均正确完成，verifier 接受 否则拒绝。
+9. 令 $z_L=z'_L, z_R=z'_R, L=L', R=R'，m=m/2$，重复5～8步， 直到 $\vec a$ 折叠成1个点。
+10. 最后一轮中除了第8步的验证外，还需要验证 $\vec a' \overset{?}{=} z'$。
+11. 如果上述过程均正确完成，verifier 接受 否则拒绝。
 
 
 
