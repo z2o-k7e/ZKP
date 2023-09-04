@@ -43,6 +43,35 @@ C = a_0G_0+a_1G_1+\cdots+ a_nG_n
 $$
 
 <br>
+
+### Pedersen承诺具有加法同态性
+所谓加法同态，即两数相加和的密文等于两数的密文相加，假设明文a, b, 加密函数e，满足：
+
+$$
+c = a + b
+e(a) + e (b) = e(a+b)
+$$
+
+我们称函数e具有加法同态性。
+
+对于消息 $m_1, m_2$，随机数 $r_1，r_2$，它们的承诺分别为
+
+$$
+C_1=m_1 G+r_1 H
+C_2 = m_2G+r_2 H
+$$
+
+$m_1 +m_2$ 之和的承诺为：
+
+$$
+\begin{split}
+C &= (m_1+m_2) G+(r_1+r_2) H \\ 
+&= (m_1 G + r_1 H) + (m_2 G+r_2 H) \\ 
+&= C_1 + C_2 
+\end{split}
+$$
+
+<br>
 <br>
 
 # Vector Commitment
@@ -278,7 +307,7 @@ $$
 \vec a \cdot \vec b = a_0 b_0 + a_1 b_1 + a_2 b_2 + \cdots + a_{n-1} b_{n-1} 
 $$
 
-我们可以将多项式 $f(x)= a_0+a_1x+a_2x^2+a_3x^3+\cdots+a_{n-1}x^{n-1}$, 看作 $\vec a = (a_0, a_1, \ldots, a_{n-1})$ 和 $\vec b = (1, x, \ldots, x^{n-1})$ 两个向量的内积。
+我们可以将多项式 $f(x)= a_0+a_1x+a_2x^2+a_3x^3+\cdots+a_{n-1}x^{n-1}$, 看作是 $\vec a = (a_0, a_1, \ldots, a_{n-1})$ 和 $\vec b = (1, x, \ldots, x^{n-1})$ 两个向量的内积。 IPA arguments 的流程如下。 
 
 + **Setup**：<br>
 生成一组随机数，构成公共参数 $gp=(G_0,G_1,G_2,\cdots, G_{n-1})$。
@@ -408,6 +437,7 @@ $$
 <br>
 <div align=center><img src="https://github.com/zkp-co-learning/ZKP/assets/78890754/49b6291a-946f-410e-b209-3864bccf2a0e"></div>
 <br>
+IPA argument 的思路是通过随机数 $r$将一个高阶多项式不停的折叠，直到变成一个常数。仔细观察，不难发现IPA argument 的commitment scheme 是pedersen commitment。
 <br>
 
 
