@@ -102,7 +102,7 @@ $$
 多项式承诺可以理解为「多项式」的「承诺」。如果我们把一个多项式表达成如下的公式，
 
 $$
-f(X) = a_0 + a_1X + a_2X^2 + \cdots + a_nX^n
+f(x) = a_0 + a_1x + a_2x^2 + \cdots + a_nx^n
 $$
 
 那么我们可以用所有系数构成的向量来唯一标识多项式 $f(x)$。
@@ -193,11 +193,13 @@ $$
 q(x)=\frac{f(x)-h(x)}{\prod \limits_{i=1}^m (x-\zeta_i)}
 $$
 
-Prover 生成$[q(x)]_2$ 并发送给Verifier，Verifier 自己计算 $[h(x)]_1$和 $[\prod \limits_{i=1}^m(x-\zeta_m)]_1$ ，最后再验证
+Prover 生成 $[q(x)]_2$ 并发送给Verifier，Verifier自己计算 $\[h(x)\]_1$, $[\prod \limits_{i=1}^m(x-\zeta_m)]_1$ ，最后再验证
+
 
 $$
 e([f(x)]_1- [h(x)]_1，[1]_2) \overset{?}{=} e([\prod \limits_{i=1}^m(x-\zeta_m) ]_1,[q(x)]_2)
 $$
+
 
 需要说明 $[q(x)]_2$是 $\mathbb{G_2}$上的承诺，因此需要在Setup阶段产生m个 $\mathbb{G_2}$基 $(H, \tau H, \cdots, \tau^mH)$ $(\color{red}Question(keep)是否需要m个 \mathbb{G}_2上的基点?)$。
 <br>
@@ -210,27 +212,27 @@ $$
 
 $$
 \begin{array}{l}
-f_1(X) = q_1(X)\cdot (X-\zeta) + y_1\\
-f_2(X) = q_2(X) \cdot (X-\zeta) + y_2 \\
+f_1(x) = q_1(x)\cdot (x-\zeta) + y_1\\
+f_2(x) = q_2(x) \cdot (x-\zeta) + y_2 \\
 \end{array}
 $$
 
 通过一个随机数 $\nu$，Prover 可以把两个多项式 $f_1(x), f_2(x)$) 折叠在一起，得到一个临时的多项式 $g(x)$ ：
 
 $$
-g(X) = f_1(X) + \nu\cdot f_2(X)
+g(x) = f_1(x) + \nu\cdot f_2(x)
 $$
 
 进而我们可以根据多项式余数定理，推导验证下面的等式：
 
 $$
-g(X) - (y_1 + \nu\cdot y_2) = (X-\zeta)\cdot (q_1(X) + \nu\cdot q_2(X))
+g(x) - (y_1 + \nu\cdot y_2) = (x-\zeta)\cdot (q_1(x) + \nu\cdot q_2(x))
 $$
 
 我们把等号右边的第二项看作为「商多项式」，记为 $q(x)$：
 
 $$
-q(X) = q_1(X) + \nu\cdot q_2(X)
+q(x) = q_1(x) + \nu\cdot q_2(x)
 $$
 
 假如 $f_1(x)$  在 $x=\zeta$ 处的求值证明为 $\pi_1$，而 $f_2(x)$在 $\zeta$ 处的求值证明为 $\pi_2$，那么根据群加法的同态性，Prover 可以得到商多项式  $q(x)$的承诺：
@@ -248,7 +250,7 @@ $$
 并用这个折叠后的 $C$ 来验证多个多项式在一个点处的运算取值：
 
 $$
-y_g = y_1 + \nu\cdot y_2
+y_g = y_1 + \nu \cdot y_2
 $$
 
 从而把多个求值证明相应地折叠成一个，Verifier 可以一次验证完毕：
@@ -297,7 +299,7 @@ $$
 <br>
 
 # IPA Arguments
-IPA(Inner Product Arguments) 中文翻译为内积证明，这是一种不要求可信设置的零知识证明算法。门罗币（Monero）就用了这个算法。内积，即计算两个向量中每个分量的乘积和， 例如对于$\vec a = (a_0, a_1, \ldots, a_{n-1})$，$\vec b = (b_0, b_1, \ldots, b_{n-1})$ 两个向量，他们的内积等于
+IPA(Inner Product Arguments) 中文翻译为内积证明，这是一种不要求可信设置的零知识证明算法。门罗币（Monero）就用了这个算法。内积，即计算两个向量中每个分量的乘积和， 例如对于 $\vec a = (a_0, a_1, \ldots, a_{n-1})$，$\vec b = (b_0, b_1, \ldots, b_{n-1})$ 两个向量，他们的内积等于
 
 $$
 \vec a \cdot \vec b = a_0 b_0 + a_1 b_1 + a_2 b_2 + \cdots + a_{n-1} b_{n-1} 
@@ -326,19 +328,12 @@ $$
 将 $\vec a, gp$ 从中间分成两半，计算 $z_L, z_R, L, R$（假设 $n=2^k, m=n/2$)
 
 $$
-z_L=a_0+a_1u+ \cdots a_{m-1}u^{m-1}
-$$
-
-$$
-z_R = a_{m}+a_{m+1}u+ \cdots + a_{n-1}u^{m-1} 
-$$
-
-$$
-L = a_0 G_m+ a_1 G_{m+1} + \cdots + a_{m-1} G_{n-1}
-$$
-
-$$
-R = a_{m} G_0 + a_{m+1} G_1 + \cdots + a_{n-1} G_{m_1}
+\begin{split}
+&z_L=a_0+a_1u+ \cdots a_{m-1}u^{m-1} \\
+&z_R=a_{m}+a_{m+1}u+ \cdots + a_{n-1}u^{m-1} \\
+&L=a_0 G_m+ a_1 G_{m+1} + \cdots + a_{m-1} G_{n-1} \\
+&R=a_{m} G_0 + a_{m+1} G_1 + \cdots + a_{n-1} G_{m_1} \\
+\end{split}
 $$
 
 然后将将 $z,z_L,z_R,L,R$,发送给Verifier。 
@@ -379,17 +374,12 @@ $$
 折叠后，Prover计算新的多项式 $f'(x)$在 $x=u$点的取值 $z'$ 和它的承诺 $C'$:
 
 $$
-z'= (ra_0+a_{m})+(ra_1+a_{m+1})u+ \cdots + (ra_{m-1}+a_{n-1})u^{m-1} = rz_L+z_R
-$$
-
-<br>
-
-$$
 \begin{split}
-C'&=(a_0',a_1', \cdots, a_{m-1}') \cdot (G_0',G_1',\cdots, G_{m-1}')\\ 
+z'&= (ra_0+a_{m})+(ra_1+a_{m+1})u+ \cdots + (ra_{m-1}+a_{n-1})u^{m-1} = rz_L+z_R \\
+C'&=(a_0',a_1', \cdots, a_{m-1}') \cdot (G_0',G_1',\cdots, G_{m-1}') \\ 
 &=(ra_0+a_m，ra_1+a_{m+1}, \cdots, ra_{m-1}+a_{n-1}) \cdot (r^{-1}G_0+G_m, r^{-1}G_1+G_{m+1}, \cdots, r^{-1}G_{m-1}+G_{n-1}) \\
 &=(ra_0+a_m)(r^{-1}G_0+G_m) +(ra_1+a_{m+1})(r^{-1}G_1+G_{m+1}) + \cdots + (ra_{m-1}+a_{n-1})(r^{-1}G_{m-1}+G_{n-1}) \\
-&=C + rL+r^{-1}R
+&=C + rL+r^{-1}R \\
 \end{split}
 $$
 
@@ -397,19 +387,12 @@ $$
 同时将 $\vec a’, gp’$ 从中间分成两半，计算 $z_L’, z_R’, L’, R’$：
 
 $$
-z_L’=a_0’+a_1’u+ \cdots a_{m/2 -1}’u^{m/2-1}
-$$
-
-$$
-z_R' = a_{m/2}'+a_{m/2+1}'u+ \cdots + a_{m-1}'u^{m/2-1} 
-$$
-
-$$
-L’= a_0’  G_{m/2}’ + a_1’  G_{m/2+1}’  + \cdots + a_{m/2-1}’  G_{m-1}’ 
-$$
-
-$$
-R’ = a_{m/2}’  G_0’  + a_{m/2+1}’  G_1’  + \cdots + a_{m-1}’ G_{m/2-1}’ 
+\begin{split}
+&z_L’=a_0’+a_1’u+ \cdots a_{m/2 -1}’u^{m/2-1} \\
+&z_R'=a_{m/2}'+a_{m/2+1}'u+ \cdots + a_{m-1}'u^{m/2-1} \\
+&L’= a_0’  G_{m/2}’ + a_1’  G_{m/2+1}’  + \cdots + a_{m/2-1}’  G_{m-1}’ \\
+&R’ = a_{m/2}’  G_0’  + a_{m/2+1}’  G_1’  + \cdots + a_{m-1}’ G_{m/2-1}’ \\
+\end{split}
 $$
 
 然后将 $z',C',z'_L,z'_R,L',R'$ 发送给Verifier 
@@ -417,11 +400,10 @@ $$
 6. Verifier 知道 $z_L,z_R,L,R,r$ 的值， 自己计算比验证：
     
 $$
-z' \overset{?}{=}rz_L+z_Ru^{m/2}
-$$
-    
-$$
-C' \overset{?}{=}C+rL+r^{-1}R
+\begin{split}
+&z' \overset{?}{=}rz_L+z_Ru^{m/2} \\
+&C' \overset{?}{=}C+rL+r^{-1}R \\
+\end{split}
 $$
     
 7. 令 $z_L=z'_L, z_R=z'_R, L=L', R=R'，m=m/2$，重复4～6步， 直到 $\vec a$ 折叠成1个点。
