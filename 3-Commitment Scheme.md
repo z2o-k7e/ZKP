@@ -164,17 +164,13 @@ $$
 3. Verifier 计算
     
 $$
-\begin{split}
 f(x)-y = q(x)(x-\zeta)  
-\end{split}
 $$
     
 将等式右边展开并将 $q(x)\zeta$移到等式左边，得到
 
 $$
-\begin{split}
 f(x)-y+q(x)\zeta = q(x)x
-\end{split}
 $$
 
 对于上式应用双线性映射, Verifier只需要验证
@@ -452,7 +448,7 @@ FRI 的 Fast Reed-Solomon Interactive 三个单词首字母的大写，Reed-Solo
 FRI的思想也是类似，对于 
 
 $$
-f(x) = a_0 + a_1X + a_2X^2 + \cdots + a_{n-}X^{n-1}
+f(x) = a_0 + a_1x + a_2x^2 + \cdots + a_{n-}x^{n-1}
 $$ 
 
 理论上只需要有n个不同的点 
@@ -465,5 +461,109 @@ $$
 
 一个需要注意的问题是，这个commitment 包含 $8n$个点，我们理论上可以重建出一个 $8n-1$ 阶多项式，为了解决这个问题, Prover 好需要向Verifer 证明这些点对应的多项式 $f(x)$ 是一个比 $8n-1$ 低的多的 $n-1$多项式，这就是FRI 为什么要和LDT(Low Degree Test)配合使用的原因。 
 
+为了简化，接下来我们以 $f(x)= 1+x+2x^2+3x^3$, $\rho^-1=8$ FRI commitment的流程。 
+不难看出只需要4个点就能重建 $f(x)$，因为 $\rho^-1=8$，所以我们取 32th root of unity 作为输入集合 $\mathbb{\Omega}$。
 
-为了简化，接下来我们以 $f(x)= 1+x+2x^2+3x^3$为例来说明IPA的流程。
+<br>
+<div align=center><img src="https://github.com/zkp-co-learning/ZKP/assets/78890754/265c039f-24e1-45af-8cbf-b0ebdee6651e"></div>
+<br>
+<br>
+
+
+FRI commitment 没有setup，其流程如下：
+
++ **Commit**：<br>
+1. 将 $f(x)$ 其分为偶次项 $g_0(x)$ 和奇次项 $h_0(x)$：
+
+$$ 
+\begin{split}
+&g_0(x^2)=a_0+a_2x^2 + a_4x^4 + \cdots = 1+2x^2 \\
+&h_0(x^2)=a_1+a_3x^2 + a_5x^4 + \cdots = 1+3x^2 \\
+&f_0(x) = g_0(x^2) + xh_0(x^2)
+\end{split}
+$$
+
+2. 计算 $f_0(x)$ 在 $1，-1， w， -w , \cdots$ 的值：
+
+$$
+\begin{split}
+&f_0(1) = 1 + 1 + 2 + 3=7 \\
+&f_0(-1) = 1 - 1 + 2 - 3= -1 \\
+&f_0(w) = 1+w+2w^2+3w^3 \\
+&f_0(-w) = 1-w+2w^2-3w^3 、、
+\vdots
+\end{split}
+$$
+
+3. 计算 $f_0(x)$ 的merke_root, 并将其发给Verifer。
+
+$$
+root_0 = merkle\_root(f_0(1),f_0(-1) f_0(w), f_0(-w) \cdots, f_0(w^{31}), f_o(-w^{31})))
+$$
+
++ **Verify**：<br>
+1. Verifer 发送一个随机数 $r$ 给Prover
+2. Prover 使用 $r$ 之后做如下操作：
+   
+2.1 使用 $r_1$ 折叠 $g_0(x), h_0(x)$ 得到 $f_1(x)$,计算偶次项 $g_1(x)$ 和奇次项 $h_1(x)$：
+
+$$
+\begin{split}
+&f_1(x) = g_0(x)+rh_0(x) = 1+2x + 6(1+3x) = 7+20x \\
+&g_1(x^2) = 7 \\
+&h_1(x^2) = 20 \\
+&f_1(x) = g_1(x) + xh_1(x) \\
+\end{split}
+$$
+
+2.2 计算 $f_1(x)$ 在 $1, -1，w^2, -w^2,  ..., w^{30}, -w^{30}$的取值：
+
+$$
+\begin{split}
+&f_1(1) = 27 \\
+&f_1(-1) = -13 \\
+&f_1(w^2) = g_1(w^2) + w^2h_1(w^2) = 7+20w^2 \\
+&f_1(-w^2) = g_1(-w^2) + (-w^2)h_1(-w^2) = 7-20w^2 \\
+\vdots
+&f_1(w^{30}) = g_1(w^{30}) + w^{30}h_1(w^{30}) = 7+20w^{30} \\
+&f_1(-w^{30}) = g_1(-w^{30}) - w^{30}h_1(-w^{30}) = 7-20w^{30} \\
+\end{split}
+$$
+
+2.2 计算 $f_1(x)$ merkle root,并将其发给Verifer。
+
+$$
+root_1 = merkle\_root(f_0(1),f_0(-1), f_0(w^2),  f_0(-w^2), \cdots, f_0(w^{30}), f_0(-w^{30}))
+$$
+
+    
+3. Verifier 随机挑选1个点，检查：
+
+$$
+f_1(x^2) \overset{?}{=}( \frac{f_0(x)+f_0(-x)}{2} + r_1 \frac{f_0(x)-f_0(-x)}{2x})
+$$
+
+令 $x=w$, 
+
+$$
+\begin{split}
+等式左边 &=f_1(w^2) = 7+20w^2 \\
+等式右边 &=\frac{f_0(w)+f_0(-w)}{2} + r_1 \frac{f_0(w)-f_0(-w)}{2w} = (1+2w^2) + 6 *\frac{2w+6w^3}{2w} = 7+20w^2 \\
+\end{split}
+$$
+
+需要说明的是在https://zk-learning.org/assets/lecture8.pdf中提到可以在完成全部折叠之后，再进行query，我感觉也可以让folding 和query 穿插进行不影响整个协议。
+
+4. 检查通过后，请Prover 提供 $f_1(w^2), f_0(w),f_0(-w)$ 的merkle proof，   
+5. Prover 提供merkle proof， Verifier验证，
+6. 验证通过后，Verifer可以再挑选一个点进行检查，即重复3～5, 或者令 $f_0(x)=f_1(x), g_0(x)=g_1(x), h_0(x)= h_1(x)$ 跳转到1, 进行下一轮折叠。
+7. 当 $f(x)$ 被折叠成一个常数时，Prover可以只一个element当作merkle root，Verifer 执行3～5的检查。
+8. 当Verifier检查的次数达到安全系数要求且上述过程没有异常，accept否则reject。
+
+<br>
+<div align=center><img src="https://github.com/zkp-co-learning/ZKP/assets/78890754/1962dd57-2354-4791-8be4-87f468976bc0"></div>
+<br>
+
+### TODO(keep), 当query点不是 $w^i$的处理。
+
+
