@@ -443,8 +443,10 @@ $$
 
 为了简化，接下来我们以 $f(x)= 1+x+2x^2+3x^3$为例来说明IPA的流程。
 
+
 <br>
-<div align=center><img src="https://github.com/zkp-co-learning/ZKP/assets/78890754/49b6291a-946f-410e-b209-3864bccf2a0e"></div>
+<div align=center><img src="https://github.com/zkp-co-learning/ZKP/assets/78890754/5d19f0ee-2cb7-41f8-8f6b-0851ff1f0de1"></div>
+<br>
 <br>
 IPA argument 的思路是通过随机数 $r$将一个高阶多项式不停的折叠，直到变成一个常数。仔细观察，不难发现IPA argument 的commitment scheme 是pedersen commitment。
 <br>
@@ -454,7 +456,7 @@ IPA argument 的思路是通过随机数 $r$将一个高阶多项式不停的折
 
 
 # FRI Commitment
-FRI 的 Fast Reed-Solomon Interactive 三个单词首字母的大写，Reed-Solomon 是通信中一种常用的FEC 编码，基本思想是在原始信息的基础上增加冗余信息来对抗信道中的干扰。
+FRI 的 <ins>F</ins>ast <ins>R</ins>eed-Solomon <ins>I</ins>nteractive oracle Proofs of Proximity 的缩写。Reed-Solomon 是通信中一种常用的FEC 编码，基本思想是在原始信息的基础上增加冗余信息来对抗信道中的干扰。
 
 例如我们要传输的1个bit原始信息，当原始bit为0b0时，编码后的数据是4个bit的0b0000，当原始bit为1时，编码后的数据是4个bit的0b1111。在传输过程中，因为受到干扰，接收方收可能会收到0b0100的时候，这个时候，接收方将它和0b0000, 0b1111比较，因为0b0100到0b0000的汉明距离时1， 到0b1111的距离时3，所以最后将它译作0b0000，对应的原始信息为0b0。
 
