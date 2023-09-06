@@ -456,9 +456,9 @@ IPA argument 的思路是通过随机数 $r$将一个高阶多项式不停的折
 
 
 # FRI Commitment
-FRI 的 <ins>F</ins>ast <ins>R</ins>eed-Solomon <ins>I</ins>nteractive oracle Proofs of Proximity 的缩写。Reed-Solomon 是通信中一种常用的FEC 编码，基本思想是在原始信息的基础上增加冗余信息来对抗信道中的干扰。
+FRI 的 <ins>F</ins>ast <ins>R</ins>eed-Solomon <ins>I</ins>nteractive oracle Proofs of Proximity 的缩写。
 
-例如我们要传输的1个bit原始信息，当原始bit为0b0时，编码后的数据是4个bit的0b0000，当原始bit为1时，编码后的数据是4个bit的0b1111。在传输过程中，因为受到干扰，接收方收可能会收到0b0100的时候，这个时候，接收方将它和0b0000, 0b1111比较，因为0b0100到0b0000的汉明距离时1， 到0b1111的距离时3，所以最后将它译作0b0000，对应的原始信息为0b0。
+Reed-Solomon 是通信中一种常用的FEC 编码，基本思想是在原始信息的基础上增加冗余信息来对抗信道中的干扰。例如我们要传输的1个bit原始信息，当原始bit为0b0时，编码后的数据是4个bit的0b0000，当原始bit为1时，编码后的数据是4个bit的0b1111。在传输过程中，因为受到干扰，接收方收可能会收到0b0100的时候，这个时候，接收方将它和0b0000, 0b1111比较，因为0b0100到0b0000的汉明距离时1， 到0b1111的距离时3，所以最后将它译作0b0000，对应的原始信息为0b0。
 
 FRI的思想也是类似，对于 
 
@@ -472,20 +472,17 @@ $$
 (u_0, f(u_0)), (u_1, f(u_1)), \cdots, (u_{n-1}, f(u_{n-1}))
 $$ 
 
-就可以确定该多项式，在FRI中Prover从 $f(x)$上取 $n/\rho$ $(\rho < 1/2)$个点，假设 $\rho=1/8$, 就会有 $8n$个点来表示 $f(x)$，Prover 将这8n个点作为merkle的叶子节点得到merkle root 作为commitment提交。 
+就可以确定该多项式，在FRI中从 $f(x)$上取 $n/\rho$ $(\rho < 1/2)$个点，假设 $\rho=1/8$, 就会有 $8n$个点来表示 $f(x)$，Prover 将这8n个点作为merkle的叶子节点产生merkle root作为commitment提交。 
 
-一个需要注意的问题是，这个commitment 包含 $8n$个点，我们理论上可以重建出一个 $8n-1$ 阶多项式，为了解决这个问题, Prover 好需要向Verifer 证明这些点对应的多项式 $f(x)$ 是一个比 $8n-1$ 低的多的 $n-1$多项式，这就是FRI 为什么要和LDT(Low Degree Test)配合使用的原因。 
+一个需要注意的问题是，这个commitment 包含 $8n$个点，我们理论上可以重建出一个 $8n-1$ 阶多项式，为了解决这个问题, Prover 好需要向Verifer 证明这些点对应的多项式 $f(x)$ 是一个比 $8n-1$阶低的多的 $n-1$阶多项式，这就是FRI 为什么要和LDT(Low Degree Test)配合使用的原因。 
 
-为了简化，接下来我们以 $f(x)= 1+x+2x^2+3x^3$, $\rho^-1=8$ FRI commitment的流程。 
-不难看出只需要4个点就能重建 $f(x)$，因为 $\rho^-1=8$，所以我们取 32th root of unity 作为输入集合 $\mathbb{\Omega}$。
+为了简化，接下来我们以 $f(x)= 1+x+2x^2+3x^3$, $\rho^-1=8$ 说明FRI commitment的流程。对于 $f(x)$ 不难看出只需要4个点就能重建 $f(x)$，因为 $\rho^-1=8$，所以我们取 32th root of unity 作为输入集合 $\mathbb{\Omega}$。
 
 <br>
-<div align=center><img src="https://github.com/zkp-co-learning/ZKP/assets/78890754/265c039f-24e1-45af-8cbf-b0ebdee6651e"></div>
+<div align=center><img src=“https://github.com/zkp-co-learning/ZKP/assets/78890754/9ec5a119-5ebb-4b20-8f07-d66be8b27b17”></div>
 <br>
 <br>
 
-
-FRI commitment 没有setup，其流程如下：
 
 + **Commit**：<br>
 1. 将 $f(x)$ 其分为偶次项 $g_0(x)$ 和奇次项 $h_0(x)$：
@@ -505,7 +502,7 @@ $$
 &f_0(1) = 1 + 1 + 2 + 3=7 \\
 &f_0(-1) = 1 - 1 + 2 - 3= -1 \\
 &f_0(w) = 1+w+2w^2+3w^3 \\
-&f_0(-w) = 1-w+2w^2-3w^3 、、
+&f_0(-w) = 1-w+2w^2-3w^3 \\
 \vdots
 \end{split}
 $$
@@ -513,7 +510,7 @@ $$
 3. 计算 $f_0(x)$ 的merke_root, 并将其发给Verifer。
 
 $$
-root_0 = merkle\_root(f_0(1),f_0(-1) f_0(w), f_0(-w) \cdots, f_0(w^{31}), f_o(-w^{31})))
+root_0 = merkle(f_0(1),f_0(-1) f_0(w), f_0(-w) \cdots, f_0(w^{31}), f_o(-w^{31})))
 $$
 
 + **Verify**：<br>
@@ -539,7 +536,7 @@ $$
 &f_1(-1) = -13 \\
 &f_1(w^2) = g_1(w^2) + w^2h_1(w^2) = 7+20w^2 \\
 &f_1(-w^2) = g_1(-w^2) + (-w^2)h_1(-w^2) = 7-20w^2 \\
-\vdots
+\vdots \\
 &f_1(w^{30}) = g_1(w^{30}) + w^{30}h_1(w^{30}) = 7+20w^{30} \\
 &f_1(-w^{30}) = g_1(-w^{30}) - w^{30}h_1(-w^{30}) = 7-20w^{30} \\
 \end{split}
@@ -548,7 +545,7 @@ $$
 2.2 计算 $f_1(x)$ merkle root,并将其发给Verifer。
 
 $$
-root_1 = merkle\_root(f_0(1),f_0(-1), f_0(w^2),  f_0(-w^2), \cdots, f_0(w^{30}), f_0(-w^{30}))
+root_1 = merkle(f_0(1),f_0(-1), f_0(w^2),  f_0(-w^2), \cdots, f_0(w^{30}), f_0(-w^{30}))
 $$
 
     
@@ -558,7 +555,7 @@ $$
 f_1(x^2) \overset{?}{=}( \frac{f_0(x)+f_0(-x)}{2} + r_1 \frac{f_0(x)-f_0(-x)}{2x})
 $$
 
-令 $x=w$, 
+假设挑选了 $x=w$, 
 
 $$
 \begin{split}
@@ -567,19 +564,23 @@ $$
 \end{split}
 $$
 
-需要说明的是在https://zk-learning.org/assets/lecture8.pdf中提到可以在完成全部折叠之后，再进行query，我感觉也可以让folding 和query 穿插进行不影响整个协议。
+需要说明的是在[1] lecture8 中提到可以在完成全部折叠之后，再进行query，这里为了方便说明，在每一次folding 之后立即query。
 
-4. 检查通过后，请Prover 提供 $f_1(w^2), f_0(w),f_0(-w)$ 的merkle proof，   
-5. Prover 提供merkle proof， Verifier验证，
-6. 验证通过后，Verifer可以再挑选一个点进行检查，即重复3～5, 或者令 $f_0(x)=f_1(x), g_0(x)=g_1(x), h_0(x)= h_1(x)$ 跳转到1, 进行下一轮折叠。
+4. 检查通过后，Verifier 要求 Prover 提供 $f_1(w^2), f_0(w),f_0(-w)$ 的merkle proof。   
+5. Prover 提供merkle proof， Verifier验证。
+6. 验证通过后，Verifer可以再挑选一个点进行检查，即重复3～5, 或者令 $f_0(x)=f_1(x), g_0(x)=g_1(x), h_0(x)= h_1(x)$ 进行下一轮折叠，即重复1～5。
 7. 当 $f(x)$ 被折叠成一个常数时，Prover可以只一个element当作merkle root，Verifer 执行3～5的检查。
 8. 当Verifier检查的次数达到安全系数要求且上述过程没有异常，accept否则reject。
 
 <br>
 <div align=center><img src="https://github.com/zkp-co-learning/ZKP/assets/78890754/1962dd57-2354-4791-8be4-87f468976bc0"></div>
 <br>
+<br>
 
-### TODO(keep), 当query点不是 $w^i$的处理。
+FRI和IPA都是利用随机数将多项式 $d$次多项式 $f(x)$ 对半折叠成一个新的 $d/2$次多项式， IPA 折叠除了前一节介绍的左右对半折叠之外，也可以用FRI中的奇偶对半的方式折叠。
+
+### TODO(keep)
+当query点不是 $w^i$的处理。
 
 # Reference
 [1]: https://zk-learning.org, zk Mooc
