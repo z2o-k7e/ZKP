@@ -1,9 +1,9 @@
-本文尝试以简单的方式介绍常见的commitment scheme, 让初学者对每个commitment scheme过程有一个了解，尽量不涉及群(Group),域(Field), 有限域(Finite Field)等复杂的数学知识。此外，同一个commitment sheme 有不同的表述方法，本文主要参考 https://zk-learning.org 中的表述方法。
+本文尝试以简单的方式介绍常见的commitment scheme, 让初学者对每个commitment scheme过程有一个了解，尽量不涉及群(Group),域(Field), 有限域(Finite Field)等复杂的数学知识。此外，同一个commitment sheme 有不同的表述方法，本文主要参考[1]中的表述方法。
 <br>
 <br>
 
 # commitment
-承诺(Commitment)是零知识证明领域的一个重要组件，它以安全的方式将一个值隐藏，并在未来的证明这个值的有效性。
+承诺(Commitment)是零知识证明的一个重要组件，它以安全的方式将一个值隐藏，并在未来的证明这个值的有效性。
 所谓承诺，是对消息「锁定」，得到一个锁定值。这个值被称为对象的「承诺」，例如 $C$ 就是消息 $x$的承诺
 
 $$
@@ -15,20 +15,20 @@ $$
 + Binding：难以找到一个 $x', x'\neq x$，使得 $C=commit(x')$
 
 最简单的承诺操作就是 Hash 运算。请注意这里的 Hash 运算需要具备密码学安全强度，比如 SHA256, Keccak 等。除了 Hash 算法之外，还有 Pedersen 承诺等。承诺通常分成3个阶段：
-+ **Setup：** 选择一组公共参数，通常是在椭圆曲线或者有限域挑选一组随机数作为基点。有些commitment scheme 没有Setup阶段。
++ **Setup：** 通常是在椭圆曲线或者有限域挑选一组随机数作为基点作为公共参数。有些commitment scheme 不需要公共参数。
 + **Commit：** Prover 将原始信息和基点进行运算得到一个加密的值，原始的信息隐藏在其中，并将这个加密的值发给Verifier。
 + **Verify：** Prover提供原始信息或者相关的证明给Verifier，Verifer执行验证算法来确认承诺的正确性。
 <br>
 <br>
 
 # Pedersen Commitment
-Pedersen承诺 是1992年在“Non-Interactive and Information-Theoretic Secure Verifiable Secret Sharing”一文中提出。Pedersen承诺既可以应用于离散对数和椭圆曲线，本文中将以椭圆曲线为例说明。 Pedersen Commitment
+Pedersen承诺 是1992年在“Non-Interactive and Information-Theoretic Secure Verifiable Secret Sharing”一文中提出。Pedersen承诺可以应用于离散对数和椭圆曲线，本文中将以椭圆曲线为例说明。 Pedersen Commitment 由3个阶段。
 
 + **Setup**：     
-Prover 随机挑选椭圆曲线上的两个点 $G,H$，并公开。
+Prover 随机挑选椭圆曲线上的两个点 $G,H$作为公共参数。
 
 + **Commit**：     
-对于消息 $m$, Prover 随机挑选致盲因子 $r$，提交 $C = mG + rH$，$C$是椭圆曲线上的一个点。
+对于消息 $m$, Prover 随机挑选致盲因子 $r$，提交 $C = mG + rH$， $C$ 是椭圆曲线上的一个点。
 
 + **Verify**：   
 Prover 发送 $(m,r)$给Verifier，Verifier计算 $C'=mG+rH$，并验证 $C'\overset{\text{?}}{=} C$。
@@ -36,16 +36,16 @@ Prover 发送 $(m,r)$给Verifier，Verifier计算 $C'=mG+rH$，并验证 $C'\ove
 <div align=center><img src ="https://github.com/zkp-co-learning/ZKP/assets/78890754/2027ab30-b7a1-4680-8635-2b9b82b7cd17"></div>
 <br>
 
-Pedersen Commitment 还可以对多个值进行承诺，对于 $\vec a = (a_0,a_1,\cdots,a_n)$。Prover 随机挑选一系列的基点 $(G_0,G_1,\cdots\,vGn)$ ， 计算:
+Pedersen Commitment 还可以对向量进行承诺，对于 $\vec a = (a_0,a_1,\cdots,a_{n-1})$。Prover 随机挑选一系列的基点 $(G_0,G_1,\cdots\,G_{n-1})$ ， 计算:
 
 $$
-C = a_0G_0+a_1G_1+\cdots+ a_nG_n
+C = a_0G_0+a_1G_1+\cdots+ a_{n-1}G_{n-1}
 $$
 
 <br>
 
 ### Pedersen承诺具有加法同态性
-所谓加法同态，即两数相加和的密文等于两数的密文相加，假设明文a, b, 加密函数e，满足：
+所谓加法同态，即两数和的密文等于两数的密文的和，假设明文a, b, 加密函数e，满足：
 
 $$
 \begin{split}
@@ -82,20 +82,40 @@ $$
 向量承诺用于承诺有 $d$个元素的向量 $\vec u=(u_1,u_2,\cdots,u_d)$，Merkle Commitment 是常用的向量承诺方案， Merkle Commitment只有Commit 和Verify 两个阶段。下面以 $\vec u=[z,k,-,s,n,a,r,k]$ 为例说明Merkle Commitment的流程。
 
 + **Commit**：     
-对于 $\vec u=[z,k,-,s,n,a,r,k]$, Prover 首先将向量的元素作为叶子节点构成一个满二叉树(当元素个数不是 $2^n$的向量，在后面补0到最近的 $2^n$)，然后两两一组做Hash，得到如下图所示的一棵二叉树，图中每一个非叶子节点都是由它的孩子节点的hash构成： $h_1=Hash(h_2,h_3)$， $h_2 = Hash(h_4,h_5)$， $\cdots$。 $h_1$是Merkle Tree的根，也是 $\vec u$ 的commitment。
+对于 $\vec u=[z,k,-,s,n,a,r,k]$, Prover 首先将向量的元素作为叶子节点构成一个满二叉树(对于元素个数不是 $2^n$的向量，在后面补0到最近的 $2^n$)，然后两两一组做Hash，得到如下图所示的一棵二叉树，图中每一个非叶子节点都是由它的孩子节点的hash构成：
+
+$$
+\begin{split}
+&h_1=Hash(h_2,h_3) \\
+&h_2 = Hash(h_4,h_5) \\ 
+&\vdots 
+\end{split}
+$$ 
+
+ $h_1$是Merkle Tree的根，也是 $\vec u$ 的commitment。
 
 <br>
 <div align=center><img src="https://github.com/zkp-co-learning/ZKP/assets/78890754/51a562b1-37b4-4b06-99c7-e97482b5eb6d"></div>
 <br>
 
 + **Verify**：   
-当Prover被要求证明的某元素确实存在于某个位置时，它将仅提供必要的节点，这些节点构成的集合通常被称为Merkle Path, 例如为了证明 $n$是 $\vec u$的第4个元素， Prover将提供Merkle Path  $[s, h_4, h_3]$ (图中蓝色的节点) 给Verifier， Verifier将执行以下操作： $h_5=Hash(s,n)$， $h_2=Hash(h_4, h_5)$， $h'_1=Hash(h_2, h_3)$。Verifier 验证 $h'_1 \overset{?}{=} h_1$，如果它们相等，那么 $n$确实是 $\vec u$中第4个元素。
+当Prover被要求证明的某元素存在于某个位置时，它将仅提供必要的节点，这些节点构成的集合通常被称为Merkle Path 或者Merkle Proof, 例如为了证明 $n$是 $\vec u$的第4个元素， Prover将提供Merkle Path  $[s, h_4, h_3]$ (图中蓝色的节点) 给Verifier， Verifier将执行以下操作：
+
+$$
+\begin{split}
+&h_5=Hash(s,n) \\
+&h_2=Hash(h_4, h_5) \\ 
+&h'_1=Hash(h_2, h_3) \\
+\end{split}
+$$
+
+Verifier 验证 $h'_1 \overset{?}{=} h_1$，如果相等，那么 $n$就是 $\vec u$中第4个元素。
 
 <br>
 <div align=center><img src="https://github.com/zkp-co-learning/ZKP/assets/78890754/d1691b18-96d5-478b-b6ff-7daf8ecec625"></div>
 <br>
 
-
+Merkle commitment 的流程图如下：
 <br>
 <div align=center><img src="https://github.com/zkp-co-learning/ZKP/assets/78890754/30a24454-c8d5-4e61-9e9d-b418fb9ec526"></div>
 <br>
@@ -121,9 +141,10 @@ $$
 C = \textrm{Hash}(a_0, a_1,a_2, \cdots,a_n)
 $$
 
-或者，也可以使用 向量版本的 Petersen 承诺。此外，本文后面介绍的IPA commitment，FRI commitment 也可以用于承诺一个多项式。本节我们讨论KZG10 [Kate-Zaverucha-Goldberg'10] 承诺。
+或者，也可以使用向量版本的 Petersen 承诺。此外，本文后面介绍的IPA commitment，FRI commitment 也可以用于承诺一个多项式。本节我们讨论KZG10[6]承诺。
 
-KZG10 commitment 是基于双线性配对(Bilinear pairings)的，关于双线性配对的原理可以参考其他的资料，这里不做过多的叙述。<br>
+KZG10 commitment 是基于双线性配对(Bilinear pairings)的，关于双线性配对的原理可以参考其他的资料，这里不做过多的叙述。
+<br>
 KZG10 承诺分为3个阶段：
 
 + **Setup**：
@@ -135,7 +156,7 @@ $$
 $$
     
 其中 $G\in \mathbb{G}_1,H\in\mathbb{G}_2$，并且存在双线性映射 $e\in\mathbb{G}_1 \times \mathbb{G}_2 \rightarrow \mathbb{G}_T$。    
-对于双线性群，使用符号 $[1]_1\triangleq G$，$[1]_2\triangleq H$ 表示两个群上的生成元，这样 KZG10 的系统参数（也被称为 SRS, Structured Reference String）可以表示如下： 
+对于双线性群，使用符号 $[1]_1\triangleq G$， $[1]_2\triangleq H$ 表示两个群上的生成元，这样 KZG10 的系统参数（也被称为 SRS, Structured Reference String）可以表示如下： 
     
 $$
 \mathsf{srs}=([1]_1,[\tau]_1,[\tau^2]_1,[\tau^3]_1,\ldots,[\tau^{n-1}]_1,[1]_2,[\tau]_2)
@@ -148,7 +169,7 @@ Prover 将多项式系数 $(a_0,a_1,\cdots,a_{n-1})$和 $(G_0,G_1,\cdots,G_{n-1}
 
 $$
 \begin{split}
-C &=a_0 G_0 + a_1  G_1 + \cdots + a_{n-1} G_{n-1} \\
+C = &=a_0 G_0 + a_1  G_1 + \cdots + a_{n-1} G_{n-1} \\
  & = a_0  G + a_1 \tau G + \cdots + a_{n-1}\tau^{n-1} G\\
  & = f(\tau) G 
 \end{split}
@@ -189,7 +210,7 @@ $$
 
 ## 单个多项式多点打开
 
-Prover 明阶为 $d$ 的函数 $f(x)$经过 $f(\zeta_1)=y_1, f(\zeta_2)=y_2，\cdots, f(\zeta_m)=y_m, m < d$ 个点，只需要验证一次就可以了。
+阶为 $d$ 的函数 $f(x)$经过 $f(\zeta_1)=y_1, f(\zeta_2)=y_2，\cdots, f(\zeta_m)=y_m, m < d$ 个点，只需要验证一次就可以了。
 首先构造一个经过 $(\zeta_1, y_1),(\zeta_2,y_2)，\cdots,(\zeta_m,y_m)$ 的辅助函数 $h(x)$。
 由于 $(\zeta_1, \zeta_2, \cdots, \zeta_m)$同时为 $f(x),h(x)$的根，因此他们也是 $f(x)-h(x)$的根，故存在一个商多项式:
 
@@ -197,11 +218,11 @@ $$
 q(x)=\frac{f(x)-h(x)}{\prod \limits_{i=1}^m (x-\zeta_i)}
 $$
 
-Prover 生成 $[q(x)]_2$ 并发送给Verifier，Verifier自己计算 $\[h(x)\]_1$, $[\prod \limits_{i=1}^m(x-\zeta_m)]_1$ ，最后再验证
+Prover 生成 $[q(x)]_2$ 并发送给Verifier，Verifier自己计算 $[h(x)]_1$， $[\prod \limits_{i=1}^m(x-\zeta_m)]_1$，最后再验证：
 
 
 $$
-e([f(x)]_1- [h(x)]_1，[1]_2) \overset{?}{=} e([\prod \limits_{i=1}^m(x-\zeta_m) ]_1,[q(x)]_2)
+ e([f(x)]_1- [h(x)]_1，[1]_2) \overset{?}{=} e([\prod \limits_{i=1}^m(x-\zeta_m) ]_1,[q(x)]_2)
 $$
 
 
@@ -273,7 +294,7 @@ $$
 g(x_1, x_2, x_3, x_4) = (1-x_1)x_2((x_3+x_4)-(x_3x_4))
 $$
 
-我们可以使用sum-check protocol [Lund-Fortnow-Karloff-Nissan'90] 对multilinear 多项式的承诺及其验证。sum-check protocol 只有Commit 和 Verify两个阶段。
+我们可以使用sum-check protocol[7] 对multilinear 多项式的承诺及其验证。sum-check protocol 只有Commit 和 Verify两个阶段。
 
 + **Commit**：<br>
 Prover 计算multilinear多项式的commitment
@@ -282,7 +303,7 @@ $$
 C= \sum_{b_0 \in \{0,1\}} \sum_{b_2 \in \{0,1\}} \cdots \sum_{b_l \in \{0,1\}} g(b_1, b_2, b_3, \cdots, b_l)
 $$
 
-并将其发给Verifier。仔细观察，不难看出通过 枚举 $(b_0,b_1,\cdots,b_l)$ 每一个取值带入公式后求和就能得到C， 例如对于上面 $g(x_1, x_2, x_3, x_4)$ 这个函数，这个值等于= $g(0,0,0,0) + g(0,0,0,1)+\cdots+g(1,1,1,1)$
+并将其发给Verifier。仔细观察，不难看出通过枚举 $(b_0,b_1,\cdots,b_l)$ 后就能得到C， 例如对于上面 $g(x_1, x_2, x_3, x_4)$ 这个函数， $C = g(0,0,0,0) + g(0,0,0,1)+\cdots+g(1,1,1,1)$
 
 
 + **Verify**：
@@ -291,25 +312,28 @@ $$
 3. Verifier 挑选一个随机数 $\zeta_1$ 发送给Prover。
 4. Prover 用 $\zeta_1$ 取代 $x_1$。然后保留第2个变量 $x_2$为自由变量，其他变量的取值为 $x_i\in \{0,1\}(3\leqslant i \leqslant l)$时，计算部分和公式 
  $g_2(x_2)$。
-5. Verifier 检查 $g_{i} \overset{?}{=}g_{i+1}(0)+g_{i+1}(1)$。
+5. Verifier 检查 $g_2 \overset{?}{=}g_1(0)+g_1(1)$。
 6. 重复3~5直到最后一个变量 $x_l$也变成自由变量。
 7. Verifier 挑选一个随机数 $\zeta_l$，本地计算 $g_l(\zeta_l)$，并从一个可信的oracle $(\color{red}Question(keep)实际执行中谁是oracle?)$ 获得 $g(\zeta_1,\zeta_2,\cdots,\zeta_l)$的值，然后验证 $g_l(\zeta_l) \overset{?}{=} g(\zeta_1,\zeta_2,\cdots,\zeta_l)$
 
 
-下图详细的描述了 $g(x_1, x_2, x_3, x_4) = (1-x_1)x_2((x_3+x_4)-(x_3x_4))$ commit和verify的过程.<br>
+下图详细的描述了 $g(x_1, x_2, x_3, x_4) = (1-x_1)x_2((x_3+x_4)-(x_3x_4))$ Multlinear commit的过程.
+<br>
 <br>
 <div align=center><img src="https://github.com/zkp-co-learning/ZKP/assets/78890754/c7c922c8-8018-4d5c-9796-2065d2ead7dc"></div>
 <br>
 <br>
 
 # IPA Arguments
-IPA(Inner Product Arguments) 中文翻译为内积证明，这是一种不要求可信设置的零知识证明算法。门罗币（Monero）就用了这个算法。内积，即计算两个向量中每个分量的乘积和， 例如对于 $\vec a = (a_0, a_1, \ldots, a_{n-1})$，$\vec b = (b_0, b_1, \ldots, b_{n-1})$ 两个向量，他们的内积等于
+IPA(Inner Product Arguments) 中文翻译为内积证明，这是一种不要求可信设置的零知识证明算法。门罗币（Monero）就用了这个算法。内积，即计算两个向量中每个分量的乘积和， 例如对于 $\vec a = (a_0, a_1, \ldots, a_{n-1})$， $\vec b = (b_0, b_1, \ldots, b_{n-1})$ 两个向量，他们的内积等于
 
 $$
 \vec a \cdot \vec b = a_0 b_0 + a_1 b_1 + a_2 b_2 + \cdots + a_{n-1} b_{n-1} 
 $$
 
-我们可以将多项式 $f(x)= a_0+a_1x+a_2x^2+a_3x^3+\cdots+a_{n-1}x^{n-1}$, 看作是 $\vec a = (a_0, a_1, \ldots, a_{n-1})$ 和 $\vec b = (1, x, \ldots, x^{n-1})$ 两个向量的内积。 IPA arguments 的流程如下。 
+我们可以将多项式 $f(x)= a_0+a_1x+a_2x^2+a_3x^3+\cdots+a_{n-1}x^{n-1}$, 看作是 $\vec a = (a_0, a_1, \ldots, a_{n-1})$ 和 $\vec b = (1, x, \ldots, x^{n-1})$ 两个向量的内积。 
+
+IPA arguments 的流程如下：
 
 + **Setup**：<br>
 生成一组随机数，构成公共参数 $gp=(G_0,G_1,G_2,\cdots, G_{n-1})$。
@@ -326,7 +350,10 @@ $$
 2. Prover 计算 $f(x)$在  $x=u$ 点的取值 $z$：
 
 $$
-z = (a_0, a_1,a_2,\cdots, a_{n-1}) \cdot (1,u,u^2, \cdots, u^{n-1})=(a_0+a_1u+a_2u^2+ \cdots + a_{n-1}u^{n-1})
+\begin{split}
+z &= (a_0, a_1,a_2,\cdots, a_{n-1}) \cdot (1,u,u^2, \cdots, u^{n-1}) \\
+& =(a_0+a_1u+a_2u^2+ \cdots + a_{n-1}u^{n-1}) \\
+\end{split}
 $$
 
 将 $\vec a, gp$ 从中间分成两半，计算 $z_L, z_R, L, R$（假设 $n=2^k, m=n/2$)
@@ -340,7 +367,7 @@ $$
 \end{split}
 $$
 
-然后将将 $z,z_L,z_R,L,R$,发送给Verifier。 
+$L$ 是左半部分 $\vec a$ 和 右半部分 $gp$ 的内积，  $R$是右半部分 $\vec a$ 和 坐半部分 $gp$ 的内积， 构成了一个交叉项(cross item)，然后将 $z,z_L,z_R,L,R$,发送给Verifier。 
 
 3. Verifier 验证 $z \overset{?}{=}z_{L}+z_{R}u^m$。
 4. 如果通过，Verifier 发送一个随机数 $r$给Prover。
@@ -401,7 +428,7 @@ $$
 
 然后将 $z',C',z'_L,z'_R,L',R'$ 发送给Verifier 
 
-6. Verifier 知道 $z_L,z_R,L,R,r$ 的值， 自己计算比验证：
+6. Verifier 知道 $z_L,z_R,L,R,r$ 的值， 自己计算并验证：
     
 $$
 \begin{split}
@@ -411,7 +438,7 @@ $$
 $$
     
 7. 令 $z_L=z'_L, z_R=z'_R, L=L', R=R'，m=m/2$，重复4～6步， 直到 $\vec a$ 折叠成1个点。
-8. 最后一轮中除了第8步的验证外，还需要验证 $\vec a' \overset{?}{=} z'$  $(\color{red}Question(keep) 这句话是否正确)$。如果上述过程均正确完成，verifier 接受 否则拒绝。
+8. 最后一轮中除了第6步的验证外，还需要验证 $\vec a' \overset{?}{=} z'$  $(\color{red}Question(keep) 这句话是否正确)$。如果上述过程均正确完成，verifier 接受 否则拒绝。
 <br>
 
 为了简化，接下来我们以 $f(x)= 1+x+2x^2+3x^3$为例来说明IPA的流程。
@@ -551,5 +578,16 @@ $$
 <br>
 
 ### TODO(keep), 当query点不是 $w^i$的处理。
+
+# Reference
+[1]: https://zk-learning.org, zk Mooc
+[2]: https://people.cs.georgetown.edu/jthaler/ProofsArgsAndZK.pdf
+[3]: https://twitter.com/VitalikButerin/status/1371844878968176647
+[4]: https://github.com/sec-bit/learning-zkp/blob/develop/plonk-intro-cn/plonk-polycom.md
+[5]: https://starkware.co/stark-101
+[6]: https://www.iacr.org/archive/asiacrypt2010/6477178/6477178.pdf
+[7]: https://semiotic.ai/articles/sumcheck-tutorial/
+
+
 
 
