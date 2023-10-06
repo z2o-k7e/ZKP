@@ -367,7 +367,7 @@ $$
 \end{split}
 $$
 
-$L$ 是左半部分 $\vec a$ 和 右半部分 $gp$ 的内积，  $R$是右半部分 $\vec a$ 和 坐半部分 $gp$ 的内积， 构成了一个交叉项(cross item)，然后将 $z,z_L,z_R,L,R$,发送给Verifier。 
+$L$ 是左半部分 $\vec a$ 和 右半部分 $gp$ 的内积，  $R$是右半部分 $\vec a$ 和 左半部分 $gp$ 的内积， 构成了一个交叉项(cross item)，然后将 $z,z_L,z_R,L,R$,发送给Verifier。 
 
 3. Verifier 验证 $z \overset{?}{=}z_{L}+z_{R}u^m$。
 4. 如果通过，Verifier 发送一个随机数 $r$给Prover。
