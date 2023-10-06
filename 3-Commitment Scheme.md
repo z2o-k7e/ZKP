@@ -360,7 +360,7 @@ $$
 
 $$
 \begin{split}
-&z_L=a_0+a_1u+ \cdots a_{m-1}u^{m-1} \\
+&z_L=a_0+a_1u+ \cdots +a_{m-1}u^{m-1} \\
 &z_R=a_{m}+a_{m+1}u+ \cdots + a_{n-1}u^{m-1} \\
 &L=a_0 G_m+ a_1 G_{m+1} + \cdots + a_{m-1} G_{n-1} \\
 &R=a_{m} G_0 + a_{m+1} G_1 + \cdots + a_{n-1} G_{m_1} \\
@@ -432,7 +432,7 @@ $$
     
 $$
 \begin{split}
-&z' \overset{?}{=}rz_L+z_Ru^{m/2} \\
+&z' \overset{?}{=}rz_L+z_R \\
 &C' \overset{?}{=}C+rL+r^{-1}R \\
 \end{split}
 $$
@@ -448,7 +448,7 @@ $$
 <div align=center><img src="https://github.com/zkp-co-learning/ZKP/assets/78890754/5d19f0ee-2cb7-41f8-8f6b-0851ff1f0de1"></div>
 <br>
 <br>
-IPA argument 的思路是通过随机数 $r$将一个高阶多项式不停的折叠，直到变成一个常数。仔细观察，不难发现IPA argument 的commitment scheme 是pedersen commitment。
+IPA argument 的思路是通过随机数将高阶多项式不停的折叠，直到变成一个常数。仔细观察，不难发现IPA argument 的commitment scheme 是pedersen commitment。
 <br>
 <br>
 <br>
